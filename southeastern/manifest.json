@@ -1,0 +1,12 @@
+{
+  "domain": "southeastern",
+  "name": "ha-southeastern",
+  "config_flow": true,
+  "documentation": "https://github.com/crismc/HA-Southeastern",
+  "issue_tracker": "https://github.com/crismc/HA-Southeastern/issues",
+  "requirements": ["xmltodict==0.13.0"],
+  "dependencies": [],
+  "codeowners": ["@crismc"],
+  "iot_class": "cloud_polling",
+  "version": "0.0.1"
+}
