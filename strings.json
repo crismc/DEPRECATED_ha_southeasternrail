@@ -16,7 +16,7 @@
       },
       "destination": {
         "data": {
-          "destination": "Destination Station",
+          "station": "Destination Station",
           "add_another": "Add another station?"
         },
         "description": "Select the destination station",

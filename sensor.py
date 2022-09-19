@@ -1,6 +1,5 @@
 """Platform for sensor integration."""
 from __future__ import annotations
-
 from datetime import timedelta
 import logging
 
@@ -50,22 +49,22 @@ async def async_setup_entry(
 ):
     """Setup sensors from a config entry created in the integrations UI."""
     config = hass.data[DOMAIN][config_entry.entry_id]
-
     name = config[CONF_NAME] if CONF_NAME in config else DEFAULT_NAME
     station = config[CONF_ARRIVAL]
     destinations = config[CONF_DESTINATIONS]
     api_key = config[CONF_API_KEY]
     time_offset = config[CONF_TIME_OFFSET]
     time_window = config[CONF_TIME_WINDOW]
-    api = Api(api_key, NATIONAL_RAIL_URL, SOAP_ACTION_URL)
-    api.set_config(CONF_TIME_OFFSET, time_offset)
-    api.set_config(CONF_TIME_WINDOW, time_window)
 
     sensors = []
     if station is not None:
         for destination in destinations:
             if destination is not None:
-                sensors.append(SoutheasternSensor(name, station, destination, api_key, time_offset, time_window))
+                sensors.append(
+                    SoutheasternSensor(
+                        name, station, destination, api_key, time_offset, time_window
+                    )
+                )
     async_add_entities(sensors, update_before_add=True)
 
 
@@ -87,7 +86,11 @@ async def async_setup_platform(
     if station is not None:
         for destination in destinations:
             if destination is not None:
-                sensors.append(SoutheasternSensor(name, station, destination, api_key, time_offset, time_window))
+                sensors.append(
+                    SoutheasternSensor(
+                        name, station, destination, api_key, time_offset, time_window
+                    )
+                )
 
     async_add_entities(sensors, update_before_add=True)
 
@@ -103,11 +106,11 @@ class SoutheasternSensor(SensorEntity):
         self.station = station
         self._state = None
 
-        self.api = Api(api_key, NATIONAL_RAIL_URL, SOAP_ACTION_URL)
-        self.api.station = station
+        self.api = Api(
+            api_key, station, destination, NATIONAL_RAIL_URL, SOAP_ACTION_URL
+        )
         self.api.set_config(CONF_TIME_OFFSET, time_offset)
         self.api.set_config(CONF_TIME_WINDOW, time_window)
-        self.api.filters.append(destination)
 
     @property
     def unique_id(self):
@@ -147,19 +150,19 @@ class SoutheasternSensor(SensorEntity):
             try:
                 result = await self.api.api_request()
                 if not result:
-                    _LOGGER.warning("There was no reply from Southeastern servers.")
+                    _LOGGER.warning("There was no reply from Southeastern servers")
                     self._state = "Cannot reach Southeastern"
                     return
             except OSError:
-                _LOGGER.warning("Something broke.")
+                _LOGGER.warning("Something broke")
                 self._state = "Cannot reach Southeastern API"
                 return
             except Exception:
-                _LOGGER.warning("Failed to interpret received %s", "XML.", exc_info=1)
+                _LOGGER.warning("Failed to interpret received %s", "XML", exc_info=1)
                 self._state = "Cannot interpret XML from Southeastern API"
                 return
 
-        self._state = data.get_state()
+        self._state = data.get_state(self.destination)
 
     @property
     def extra_state_attributes(self):
@@ -172,8 +175,8 @@ class SoutheasternSensor(SensorEntity):
 
         attributes["message"] = data.message()
         attributes["station_name"] = data.get_station_name()
-        attributes["destination_name"] = data.get_destination_name()
+        attributes["destination_name"] = data.get_destination_name(self.destination)
         attributes["service"] = data.get_service_details(self.destination)
-        attributes["calling_points"] = data.get_calling_points()
+        attributes["calling_points"] = data.get_calling_points(self.destination)
 
         return attributes

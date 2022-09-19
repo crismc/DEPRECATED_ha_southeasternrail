@@ -20,6 +20,14 @@
                     "password": "Password",
                     "username": "Username"
                 }
+            },
+            "destination": {
+                "data": {
+                  "station": "Destination Station",
+                  "add_another": "Add another station?"
+                },
+                "description": "Select the destination station",
+                "title": "Destination Station"
             }
         }
     }

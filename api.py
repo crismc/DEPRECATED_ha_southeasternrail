@@ -1,3 +1,4 @@
+"""API wrapper for generating the XML envelope and fetching data from the Southeastern API"""
 import aiohttp
 import async_timeout
 
@@ -7,14 +8,14 @@ from .apidata import ApiData
 class Api:
     """API wrapper for generating the XML envelope and fetching data from the Southeastern API"""
 
-    def __init__(self, api_key, request_url, soap_action):
+    def __init__(self, api_key, station, destination, request_url, soap_action):
         self.api_key = api_key
         self.request_url = request_url
         self.soap_action = soap_action
         self.time_offset = 20
         self.time_window = 120
-        self.station = ""
-        self.filters = []
+        self.station = station
+        self.filters = [destination]
         self.data = ApiData()
         self._request_in_progress = False
 
