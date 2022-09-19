@@ -63,11 +63,9 @@ async def async_setup_entry(
 
     sensors = []
     if station is not None:
-        api.station = station
         for destination in destinations:
             if destination is not None:
-                api.filters.append(destination)
-                sensors.append(SoutheasternSensor(name, station, destination, api))
+                sensors.append(SoutheasternSensor(name, station, destination, api_key, time_offset, time_window))
     async_add_entities(sensors, update_before_add=True)
 
 
@@ -84,31 +82,32 @@ async def async_setup_platform(
     api_key = config.get(CONF_API_KEY)
     time_offset = config.get(CONF_TIME_OFFSET)
     time_window = config.get(CONF_TIME_WINDOW)
-    api = Api(api_key, NATIONAL_RAIL_URL, SOAP_ACTION_URL)
-    api.set_config(CONF_TIME_OFFSET, time_offset)
-    api.set_config(CONF_TIME_WINDOW, time_window)
 
     sensors = []
     if station is not None:
-        api.station = station
         for destination in destinations:
             if destination is not None:
-                api.filters.append(destination)
-                sensors.append(SoutheasternSensor(name, station, destination, api))
+                sensors.append(SoutheasternSensor(name, station, destination, api_key, time_offset, time_window))
+
     async_add_entities(sensors, update_before_add=True)
 
 
 class SoutheasternSensor(SensorEntity):
     """Representation of a Sensor."""
 
-    def __init__(self, name, station, destination, api):
+    def __init__(self, name, station, destination, api_key, time_offset, time_window):
         """Initialize the sensor."""
         self._platformname = name
         self._name = name + "_" + station + "_" + destination
         self.destination = destination
         self.station = station
         self._state = None
-        self.api = api
+
+        self.api = Api(api_key, NATIONAL_RAIL_URL, SOAP_ACTION_URL)
+        self.api.station = station
+        self.api.set_config(CONF_TIME_OFFSET, time_offset)
+        self.api.set_config(CONF_TIME_WINDOW, time_window)
+        self.api.filters.append(destination)
 
     @property
     def unique_id(self):

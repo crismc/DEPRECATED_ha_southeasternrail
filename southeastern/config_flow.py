@@ -1,4 +1,5 @@
 import logging
+import json
 from typing import Any, Dict
 
 import voluptuous as vol
@@ -15,6 +16,8 @@ from .const import (
     DOMAIN,
 )
 
+from .station_codes import STATIONS
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -24,7 +27,6 @@ class SoutheasternConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self) -> None:
         """Initialize."""
-
         self.dataConfig: dict[str, Any] = {CONF_ARRIVAL: "", CONF_DESTINATIONS: []}
 
     async def async_step_user(self, user_input=None):
@@ -35,12 +37,12 @@ class SoutheasternConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         # Specify items in the order they are to be displayed in the UI
         data_schema = {
             vol.Required(CONF_API_KEY): str,
-            vol.Required(CONF_ARRIVAL): str,
-            vol.Required(CONF_TIME_OFFSET): str,
-            vol.Required(CONF_TIME_WINDOW): str,
+            vol.Required(CONF_ARRIVAL): vol.In(STATIONS),
+            vol.Required(CONF_TIME_OFFSET, default="20"): str,
+            vol.Required(CONF_TIME_WINDOW, default="120"): str,
         }
 
-        return self.async_show_form(step_id="init", data_schema=vol.Schema(data_schema))
+        return self.async_show_form(step_id="user", data_schema=vol.Schema(data_schema))
 
     async def async_step_destination(self, user_input=None):
         if user_input is not None:
@@ -54,7 +56,7 @@ class SoutheasternConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
         data_schema = {
-            vol.Required(CONF_DESTINATIONS): str,
+            vol.Required(CONF_DESTINATIONS): vol.In(STATIONS),
             vol.Optional("add_another", default=False): cv.boolean,
         }
 

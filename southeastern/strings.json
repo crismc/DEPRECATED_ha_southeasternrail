@@ -3,10 +3,24 @@
     "step": {
       "user": {
         "data": {
+          "api_key": "API Key",
+          "arrival": "Arrival Station",
+          "time_offset": "Time Offset",
+          "time_window": "Time Window",
           "host": "[%key:common::config_flow::data::host%]",
           "username": "[%key:common::config_flow::data::username%]",
           "password": "[%key:common::config_flow::data::password%]"
-        }
+        },
+        "description": "Enter the Darwin API key and station to watch",
+        "title": "Station"
+      },
+      "destination": {
+        "data": {
+          "destination": "Destination Station",
+          "add_another": "Add another station?"
+        },
+        "description": "Select the destination station",
+        "title": "Destination Station"
       }
     },
     "error": {
