@@ -1,8 +1,7 @@
 """Platform for sensor integration."""
 from __future__ import annotations
-from datetime import timedelta
+from datetime import datetime, timedelta
 import logging
-
 import voluptuous as vol
 
 from homeassistant import config_entries, core
@@ -25,10 +24,11 @@ from .const import (
     DOMAIN,
     NATIONAL_RAIL_URL,
     SOAP_ACTION_URL,
+    CONF_REFRESH_SECONDS,
 )
 
 _LOGGER = logging.getLogger(__name__)
-SCAN_INTERVAL = timedelta(minutes=2)
+SCAN_INTERVAL = timedelta(seconds=CONF_REFRESH_SECONDS)
 
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
@@ -62,7 +62,12 @@ async def async_setup_entry(
             if destination is not None:
                 sensors.append(
                     SoutheasternSensor(
-                        name, station, destination, api_key, time_offset, time_window
+                        name,
+                        station,
+                        destination,
+                        api_key,
+                        time_offset,
+                        time_window,
                     )
                 )
     async_add_entities(sensors, update_before_add=True)
@@ -88,7 +93,12 @@ async def async_setup_platform(
             if destination is not None:
                 sensors.append(
                     SoutheasternSensor(
-                        name, station, destination, api_key, time_offset, time_window
+                        name,
+                        station,
+                        destination,
+                        api_key,
+                        time_offset,
+                        time_window,
                     )
                 )
 
@@ -146,21 +156,21 @@ class SoutheasternSensor(SensorEntity):
         """
         data = self.api.data
 
-        if data.is_data_stale():
-            try:
-                result = await self.api.api_request()
-                if not result:
-                    _LOGGER.warning("There was no reply from Southeastern servers")
-                    self._state = "Cannot reach Southeastern"
-                    return
-            except OSError:
-                _LOGGER.warning("Something broke")
-                self._state = "Cannot reach Southeastern API"
+        # if data.is_data_stale():
+        try:
+            result = await self.api.api_request()
+            if not result:
+                _LOGGER.warning("There was no reply from Southeastern servers")
+                self._state = "Cannot reach Southeastern"
                 return
-            except Exception:
-                _LOGGER.warning("Failed to interpret received %s", "XML", exc_info=1)
-                self._state = "Cannot interpret XML from Southeastern API"
-                return
+        except OSError:
+            _LOGGER.warning("Something broke")
+            self._state = "Cannot reach Southeastern API"
+            return
+        except Exception:
+            _LOGGER.warning("Failed to interpret received %s", "XML", exc_info=1)
+            self._state = "Cannot interpret XML from Southeastern API"
+            return
 
         self._state = data.get_state(self.destination)
 

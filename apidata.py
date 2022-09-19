@@ -38,16 +38,16 @@ class ApiData:
         self.raw_result = xml_data
         self._last_update = datetime.now()
 
-    def is_data_stale(self):
-        """Check if the data hydration is stale and requires refreshing"""
-        if len(self.raw_result) > 0:
-            now = datetime.now()
-            stale_time = self._last_update + timedelta(minutes=self._refresh_interval)
+    # def is_data_stale(self):
+    #     """Check if the data hydration is stale and requires refreshing"""
+    #     if len(self.raw_result) > 0:
+    #         now = datetime.now()
+    #         stale_time = self._last_update + timedelta(minutes=self._refresh_interval)
 
-            if stale_time < now:
-                return False
+    #         if stale_time < now:
+    #             return False
 
-        return True
+    #     return True
 
     def get_data(self):
         """Parse the XML raw data and convert into a usable dictionary"""
@@ -91,8 +91,8 @@ class ApiData:
 
     def get_service_details(self, crx):
         """Get the destinations service details data"""
-        data = self.get_destination_data(crx)
-        # del data["subsequentCallingPoints"]
+        data = self.get_destination_data(crx).copy()
+        del data["subsequentCallingPoints"]
         return data
 
     def get_calling_points(self, crx):

@@ -17,7 +17,6 @@ class Api:
         self.station = station
         self.filters = [destination]
         self.data = ApiData()
-        self._request_in_progress = False
 
     def set_config(self, key, val):
         """Set config item, such as time_offset and time_window"""
@@ -80,14 +79,7 @@ class Api:
         Otherwise, wait until the existing one is complete, and return that value.
         """
         data = self.generate_data()
-
-        if not self._request_in_progress:
-            self._request_in_progress = True
-            return await self.request(self.request_url, self.soap_action, data)
-        else:
-            while self._request_in_progress:
-                if not self._request_in_progress:
-                    return self.data.raw_result
+        return await self.request(self.request_url, self.soap_action, data)
 
     async def fetch(self, session, url, soapaction, payload):
         """Fetch data from the Southeastern API"""
@@ -102,14 +94,12 @@ class Api:
                     },
                     data=payload,
                 ) as response:
-                    self._request_in_progress = False
                     result = await response.text()
                     if result:
                         self.data.populate(result)
 
                     return result
         except:
-            self._request_in_progress = False
             pass
 
     async def request(self, url, soapaction, data):

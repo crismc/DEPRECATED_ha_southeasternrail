@@ -15,3 +15,4 @@ CONF_ARRIVAL = "arrival"
 CONF_DESTINATIONS = "destination"
 CONF_TIME_OFFSET = "time_offset"
 CONF_TIME_WINDOW = "time_window"
+CONF_REFRESH_SECONDS = 60
