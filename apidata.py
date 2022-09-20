@@ -36,6 +36,7 @@ class ApiData:
     def populate(self, xml_data):
         """Hydrate the data entity with the XML API response"""
         self.raw_result = xml_data
+        self._api_xml = []
         self._last_update = datetime.now()
 
     # def is_data_stale(self):
@@ -91,14 +92,17 @@ class ApiData:
 
     def get_service_details(self, crx):
         """Get the destinations service details data"""
-        data = self.get_destination_data(crx).copy()
-        del data["subsequentCallingPoints"]
-        return data
+        data = self.get_destination_data(crx)
+        if data:
+            clonedData = data.copy()
+            del clonedData["subsequentCallingPoints"]
+            return clonedData
 
     def get_calling_points(self, crx):
         """Get the stations the service stops at on route to the destination"""
         data = self.get_destination_data(crx)
-        return data["subsequentCallingPoints"]["callingPointList"]["callingPoint"]
+        if data:
+            return data["subsequentCallingPoints"]["callingPointList"]["callingPoint"]
 
     def get_station_name(self):
         """Get the name of the station to watch for departures"""
