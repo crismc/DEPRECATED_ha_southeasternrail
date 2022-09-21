@@ -4,6 +4,8 @@ DOMAIN = "southeastern"
 
 DEFAULT_NAME = "Southeastern Rail"
 DEFAULT_ICON = "mdi:train"
+DEFAULT_TIME_OFFSET = 20
+DEFAULT_TIME_WINDOW = 120
 
 NATIONAL_RAIL_URL = "https://lite.realtime.nationalrail.co.uk/OpenLDBWS/ldb9.asmx"
 SOAP_ACTION_URL = (

@@ -94,9 +94,9 @@ class ApiData:
         """Get the destinations service details data"""
         data = self.get_destination_data(crx)
         if data:
-            clonedData = data.copy()
-            del clonedData["subsequentCallingPoints"]
-            return clonedData
+            cloned_data = data.copy()
+            del cloned_data["subsequentCallingPoints"]
+            return cloned_data
 
     def get_calling_points(self, crx):
         """Get the stations the service stops at on route to the destination"""

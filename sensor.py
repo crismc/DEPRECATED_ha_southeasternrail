@@ -27,6 +27,8 @@ from .const import (
     CONF_REFRESH_SECONDS,
 )
 
+from .station_codes import STATIONS
+
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=CONF_REFRESH_SECONDS)
 
@@ -128,17 +130,16 @@ class SoutheasternSensor(SensorEntity):
 
     @property
     def name(self) -> str:
-        data = self.api.data
+        station_name = self.station
+        destination_name = self.destination
 
-        if data is not None:
-            station = data.get_station_name()
-            destination = data.get_destination_name(self.destination)
+        if self.station in STATIONS:
+            station_name = STATIONS[self.station]
 
-            if destination and station:
-                return f"{station} to {destination}"
-            if station:
-                return f"{station} - Idle"
-        return self._name
+        if self.destination in STATIONS:
+            destination_name = STATIONS[self.destination]
+
+        return f"{station_name} to {destination_name}"
 
     @property
     def icon(self):
@@ -156,20 +157,23 @@ class SoutheasternSensor(SensorEntity):
         """
         data = self.api.data
 
-        # if data.is_data_stale():
         try:
             result = await self.api.api_request()
             if not result:
                 _LOGGER.warning("There was no reply from Southeastern servers")
-                self._state = "Cannot reach Southeastern"
+                self._state = (
+                    "There was no reply from Southeastern Trains for this service"
+                )
                 return
         except OSError:
             _LOGGER.warning("Something broke")
-            self._state = "Cannot reach Southeastern API"
+            self._state = "There was an internal error for this service"
             return
         except Exception:
             _LOGGER.warning("Failed to interpret received %s", "XML", exc_info=1)
-            self._state = "Cannot interpret XML from Southeastern API"
+            self._state = (
+                "Cannot interpret XML for this service from Southeastern Trains"
+            )
             return
 
         self._state = data.get_state(self.destination)
