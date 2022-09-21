@@ -1,9 +1,9 @@
 {
   "domain": "southeastern",
-  "name": "ha-southeastern",
+  "name": "southeastern",
   "config_flow": true,
-  "documentation": "https://github.com/crismc/HA-Southeastern",
-  "issue_tracker": "https://github.com/crismc/HA-Southeastern/issues",
+  "documentation": "https://github.com/crismc/ha_southeasternrail",
+  "issue_tracker": "https://github.com/crismc/ha_southeasternrail/issues",
   "requirements": ["xmltodict==0.13.0"],
   "dependencies": [],
   "codeowners": ["@crismc"],

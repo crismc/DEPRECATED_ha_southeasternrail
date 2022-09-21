@@ -57,7 +57,7 @@ Demo configuration:
 
 ```
 sensor:
-  - platform: ha-southeastern
+  - platform: southeastern
     api_key: 1234abcd-1a2b3c-1a2b-9876-123abc456def
     arrival: ABW
     destination: CHX
