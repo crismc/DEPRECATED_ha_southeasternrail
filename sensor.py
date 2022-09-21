@@ -139,7 +139,7 @@ class SoutheasternSensor(SensorEntity):
         if self.destination in STATIONS:
             destination_name = STATIONS[self.destination]
 
-        return f"{station_name} to {destination_name}"
+        return f"Southeastern Trains {station_name} to {destination_name}"
 
     @property
     def icon(self):
