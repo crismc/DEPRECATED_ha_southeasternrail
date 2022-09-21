@@ -37,6 +37,7 @@ This is a new component, and haven't yet got this up onto HACS. Therefore, simpl
 
 You can add integration via the Integrations menu by searching for `ha-southeastern`.
 It will ask for an API Key, provide a list of stations to set as your local arrival station, and allow you to set the time offset.
+
 ![Screenshot2](screenshot2.png)
 
 Next, it will allow you to add your destination station.
