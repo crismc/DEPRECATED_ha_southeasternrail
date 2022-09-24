@@ -1,6 +1,6 @@
 """Constants for the ha-southeastern integration."""
 
-DOMAIN = "southeastern"
+DOMAIN = "southeastern-rail"
 
 DEFAULT_NAME = "Southeastern Rail"
 DEFAULT_ICON = "mdi:train"

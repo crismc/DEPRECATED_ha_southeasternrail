@@ -1,6 +1,6 @@
 {
-  "domain": "southeastern",
-  "name": "southeastern",
+  "domain": "southeastern-rail",
+  "name": "southeastern-rail",
   "config_flow": true,
   "documentation": "https://github.com/crismc/ha_southeasternrail",
   "issue_tracker": "https://github.com/crismc/ha_southeasternrail/issues",
